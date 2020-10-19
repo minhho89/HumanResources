@@ -21,6 +21,7 @@ public class HumanResources {
     private static List<Department> departments = new ArrayList<>();
     private static List<Employee> employees = new ArrayList<>();
     private static List<Manager> managers = new ArrayList<>();
+    private static List<Staff> staffList = new ArrayList<>();
 
     public static void main(String[] args) {
         addTestData(); //TODO: delete
@@ -49,16 +50,16 @@ public class HumanResources {
                 dept1, 10);
         Manager m2 = new Manager("m2","Holland","Project Leader", 30, 3.0, LocalDate.of(2010, 5, 4),
                 dept2, 15);
-        managers.add(m1);
-        managers.add(m2);
+        staffList.add(m1);
+        staffList.add(m2);
 
         //add Employees
         Employee e1 = new Employee("e1","Cris",20,3,LocalDate.of(2020,10,10),dept1,
                 20,10.4);
         Employee e2 = new Employee("e2","Tim", 26,3.0,LocalDate.of(2019,11,10),dept2,
                 10,20);
-        employees.add(e1);
-        employees.add(e2);
+        staffList.add(e1);
+        staffList.add(e2);
 
     }
 
@@ -140,13 +141,16 @@ public class HumanResources {
                 "ID", "Name", "Age", "Pay Rate",
                 "Enter Date", "Department", "Day-off Numbers", "Overtime", "Position");
         System.out.println();
-        for (Employee e : employees
-        ) {
-            System.out.println(e.toString());
-        }
-        for (Manager m: managers
-             ) {
-            System.out.println(m.toString());
+//        for (Employee e : employees
+//        ) {
+//            System.out.println(e.toString());
+//        }
+//        for (Manager m: managers
+//             ) {
+//            System.out.println(m.toString());
+//        }
+        for (Staff f : staffList) {
+            System.out.println(f.toString());
         }
     }
 
