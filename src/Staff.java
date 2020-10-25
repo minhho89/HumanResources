@@ -78,6 +78,8 @@ public abstract class Staff {
         this.numDayOff = numDayOff;
     }
 
+    public abstract double calculateSalary();
+
     @Override
     public abstract String toString();
 }
