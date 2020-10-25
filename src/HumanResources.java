@@ -1,29 +1,29 @@
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Scanner;
+
 
 /**
  * Program "Human Resource" is an assignment for Project number #4 of subject PRO192x_02_VN.
  * Requirements: This program helps to manage human resource in a company.
  * Education unit: Funix University.
  *
- * @author Nhat-Minh Ho
- * @studentId FX03283
- * @email minhhnfx03283@funix.edu.vn
+ * @author Nhat-Minh Ho | FX03283
  * @date 2020-Oct-18
  * <p>
  * This class holds program's main thread including main() method.
  */
 public class HumanResources {
-    private static ArrayList<Department> departments = new ArrayList<>();
-    private static ArrayList<Staff> staffList = new ArrayList<>();
+    public static ArrayList<Department> departments = new ArrayList<>();
+    public static ArrayList<Staff> staffList = new ArrayList<>();
 
     public static void main(String[] args) {
         addTestData(); //TODO: delete
 
         greeting();
+        displayMenu();
         process();
     }
 
@@ -91,7 +91,7 @@ public class HumanResources {
         staffList.add(e2);
 
         Employee e3 = new Employee("e3", "Musk", 33, 1.5, LocalDate.of(2015, 3, 2), dept3,
-                03, 10, 0);
+                3, 10, 0);
         for (Department dept : departments
         ) {
             if (dept.getName().equalsIgnoreCase(e3.getDepartment().getName())) {
@@ -108,7 +108,7 @@ public class HumanResources {
     private static void greeting() {
         System.out.println("Welcome to Human Resource Management Program");
         System.out.println("version 1.0");
-        System.out.println("____________________________________________");
+        UI.printSeparatedLine(50);
     }
 
     /**
@@ -117,14 +117,14 @@ public class HumanResources {
     private static void displayMenu() {
         System.out.println("Please select your command option:");
         System.out.println("1. Display all staff list.");
-        System.out.println("2. Display all departments");
-        System.out.println("3. Display staff by departments");
-        System.out.println("4. Add new staff");
-        System.out.println("5. Search staff information by name or staff ID");
-        System.out.println("6. Display salary of all staff in sorted descending order");
-        System.out.println("7. Display salary of all staff sorted ascending order");
-        System.out.println("0. Exit program");
-        System.out.println("____________________________________________");
+        System.out.println("2. Display all departments.");
+        System.out.println("3. Display staff by departments.");
+        System.out.println("4. Add new staff.");
+        System.out.println("5. Search staff information by name or staff ID.");
+        System.out.println("6. Display salary of all staff in sorted descending order.");
+        System.out.println("7. Display salary of all staff sorted ascending order.");
+        System.out.println("0. Exit program.");
+        UI.printSeparatedLine(50);
     }
 
     /**
@@ -133,49 +133,80 @@ public class HumanResources {
     private static void process() {
         Scanner scanner = new Scanner(System.in);
         String userChoice;
+        boolean isContinue = true;
+        if (isContinue) {
+            while (true) {
 
-        while (true) {
-            ;
-            System.out.print("Your choice (0-7): ");
-            userChoice = scanner.next();
-            if (!isMainMenuInputValid(userChoice)) {
-                printInvalidMessage();
-                continue;
+                System.out.print("Your choice (0-7): ");
+                userChoice = scanner.next();
+                if (!isMainMenuInputValid(userChoice)) {
+                    UI.printInvalidMessage();
+                    continue;
+                }
+
+                switch (userChoice) {
+                    case "1" -> {
+                        displayStaffList();
+                        UI.printSeparatedLine(130);
+                    }
+                    case "2" -> {
+                        displayDepartmentList();
+                        UI.printSeparatedLine(130);
+                    }
+                    case "3" -> {
+                        displayStaffByDepartment();
+                        UI.printSeparatedLine(130);
+                    }
+                    case "4" -> {
+                        addNewStaff();
+                        UI.printSeparatedLine(50);
+                    }
+                    case "5" -> {
+                        searchStaff();
+                        UI.printSeparatedLine(130);
+                    }
+                    case "6" -> {
+                        displaySalaryDescendingOrder();
+                        UI.printSeparatedLine(130);
+                    }
+                    case "7" -> {
+                        displaySalaryAscendingOrder();
+                        UI.printSeparatedLine(130);
+                    }
+                    case "0" -> {
+                        System.out.println("Thank you, good bye!");
+                        UI.printSeparatedLine(50);
+                        System.exit(0);
+                    }
+                }
+                System.out.print("Do you want to continue (Y/N): ");
+                boolean answer = decideContinue();
+                if (answer) {
+                    displayMenu();
+                    continue;
+                }
+                System.out.println("Thank you, good bye!");
+                UI.printSeparatedLine(50);
+                System.exit(0);
             }
-            //TODO: match valid input with proper method
-            switch (userChoice) {
-                case "1":
-                    displayStaffList();
-                    System.out.println("____________________________________________");
-                    break;
-                case "2":
-                    displayDepartmentList();
-                    System.out.println("____________________________________________");
-                    break;
-                case "3":
-                    displayStaffByDepartment();
-                    System.out.println("____________________________________________");
-                    break;
-                case "4":
-                    addNewStaff();
-                    System.out.println("____________________________________________");
-                    break;
-                case "5":
-                    searchStaff();
-                    System.out.println("____________________________________________");
-                    break;
-                case "6":
-                    displaySalaryDescendingOrder();
-                    System.out.println("____________________________________________");
-                    break;
-                case "7":
-                    displaySalaryAscendingOrder();
-                    System.out.println("____________________________________________");
-                    break;
-                case "0":
-                    System.out.println("Thank you, good bye!");
-                    System.exit(0);
-                    break;
+
+        }
+
+
+    }
+
+    private static boolean decideContinue() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            String answer = scanner.next();
+            if (answer.equalsIgnoreCase("y")) {
+                return true;
+            } else if (answer.equalsIgnoreCase("n")) {
+                return false;
+            } else {
+                UI.printInvalidMessage();
+                System.out.print("Do you want to continue (Y/N)? ");
+                continue;
             }
         }
 
@@ -185,8 +216,8 @@ public class HumanResources {
      * Displays all the staff in company with details/
      */
     private static void displayStaffList() {
-        printTitle();
-        System.out.println();
+        System.out.println("Display all staff list");
+        UI.printTitle();
         for (Staff f : staffList) {
             System.out.println(f.toString());
         }
@@ -196,6 +227,7 @@ public class HumanResources {
      * Displays all the departments with details.
      */
     private static void displayDepartmentList() {
+        System.out.println("Display all departments");
         System.out.printf("%-10s%-20s%-20s", "ID", "Department Name", "Number of staff");
         System.out.println();
         for (Department d : departments
@@ -221,9 +253,8 @@ public class HumanResources {
                 return (o1.getDepartment().getName().compareToIgnoreCase(o2.getDepartment().getName()));
             }
         });
-        printTitle();
-
-        System.out.println();
+        System.out.println("Display staff by departments");
+        UI.printTitle();
 
         int arrSize = sortedList.size();
         for (int i = 0; i < arrSize; i++) {
@@ -234,8 +265,7 @@ public class HumanResources {
                 System.out.println(sortedList.get(i));
             } else if (0 < i && i < arrSize - 1) {
                 if (!sortedList.get(i - 1).getDepartment().getName().equalsIgnoreCase(sortedList.get(i).getDepartment().getName())) {
-                    System.out.println("--------------------------------------------------------------------------------------" +
-                            "-----------------------------------------------------------------------");
+                    UI.printSeparatedLine(130);
                 }
                 System.out.println(sortedList.get(i));
             } else {
@@ -243,15 +273,6 @@ public class HumanResources {
             }
         }
 
-    }
-
-    /**
-     * Print title of the display result table.
-     */
-    private static void printTitle() {
-        //                   id| name |age|pay |date|dept|off|ot   |pos |salary
-        System.out.printf("%-5s%-20s%-5s%-10s%-15s%-15s%-10s%-15s%-20s%-15s",
-                "ID", "Name", "Age", "Pay Rate", "Enter Date", "Department", "Day-off", "Overtime", "Position", "Salary");
     }
 
     /**
@@ -264,11 +285,12 @@ public class HumanResources {
      */
     private static void addNewStaff() {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Add new staff");
         String userChoice;
         while (true) {
             System.out.print("Do you want to add a new employee (E) or manager (M)? Input E/M: ");
             userChoice = scanner.next();
-            if (addNewStaffValid(userChoice)) {
+            if (CheckValidity.addNewStaffValid(userChoice)) {
                 if (userChoice.equalsIgnoreCase("E")) {
                     addNewEmployee();
                     break;
@@ -308,7 +330,7 @@ public class HumanResources {
         int numDayOff;
 
         System.out.println("Add new Manager");
-        System.out.println("----------------");
+        UI.printSeparatedLine(16);
 
         /* ID */
         System.out.print("Manager ID: ");
@@ -326,44 +348,37 @@ public class HumanResources {
             System.out.print("Your choice (1-3): ");
             positionChoice = scanner.next();
 
-            if (isPositionInputValid(positionChoice)) {
-                switch (positionChoice) {
-                    case "1":
-                        position = "Business Leader";
-                        break;
-                    case "2":
-                        position = "Project Leader";
-                        break;
-                    case "3":
-                        position = "Technical Leader";
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + positionChoice);
-                }
+            if (CheckValidity.isPositionInputValid(positionChoice)) {
+                position = switch (positionChoice) {
+                    case "1" -> "Business Leader";
+                    case "2" -> "Project Leader";
+                    case "3" -> "Technical Leader";
+                    default -> throw new IllegalStateException("Unexpected value: " + positionChoice);
+                };
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
         /* AGE */
         while (true) {
-            System.out.print("Manager age: ");
+            System.out.print("Age: ");
             ageStr = scanner.next();
-            if (isNumeric(ageStr)) {
+            if (CheckValidity.isNumeric(ageStr)) {
                 age = Integer.parseInt(ageStr);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
         /* PAY RATE */
         while (true) {
-            System.out.print("Manager pay rate: ");
+            System.out.print("Pay rate: ");
             payRateStr = scanner.next();
             scanner.nextLine(); //workaround skipping next line bug of Scanner next();
-            if (isDouble(payRateStr)) {
+            if (CheckValidity.isDouble(payRateStr)) {
                 payRate = Double.parseDouble(payRateStr);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
         /* START DATE */
         while (true) {
@@ -371,26 +386,36 @@ public class HumanResources {
             System.out.print("Start date (YYYY-MM-DD): ");
             startDateStr = scanner.next();
 
-            if (isDateInputValid(startDateStr)) {
+            if (CheckValidity.isDateInputValid(startDateStr)) {
                 startDate = LocalDate.parse(startDateStr, formatter);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
         /* DEPARTMENTS */
         System.out.println("Please enter department name following below list: ");
         displayDepartmentList();
+        int arrPosition;
+        int staffNum;
 
         while (true) {
+
             System.out.print("Enter department name: ");
             departmentStr = scanner.nextLine();
-            if (isInputDepartmentValid(departmentStr)) {
+            if (CheckValidity.isInputDepartmentValid(departmentStr)) {
                 for (Department dept :
                         departments) {
                     if (dept.getName().equalsIgnoreCase(departmentStr)) {
                         department = dept;
-                        int employeeNum = dept.getEmployeesNum();
-                        dept.setEmployeesNum(employeeNum++); //add employee number field
+
+                        staffNum = department.getEmployeesNum();
+                        staffNum++;
+                        department.setEmployeesNum(staffNum);
+
+                        arrPosition = departments.indexOf(department);
+                        //TODO: add employee number field
+                        departments.set(arrPosition, department);
+
                     }
                 }
                 break;
@@ -399,13 +424,13 @@ public class HumanResources {
         }
         /* NUMBER OF DAY-OFF */
         while (true) {
-            System.out.println("Enter number of day-off: ");
+            System.out.print("Enter number of day-off: ");
             numDayOffStr = scanner.next();
-            if (isNumeric(numDayOffStr)) {
+            if (CheckValidity.isNumeric(numDayOffStr)) {
                 numDayOff = Integer.parseInt(numDayOffStr);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
 
         /*ADD NEW MANAGER TO ARRAY LIST */
@@ -415,92 +440,6 @@ public class HumanResources {
         System.out.println("New manager has been added successfully.");
     }
 
-    /**
-     * Checks if a department name input is valid or not.
-     *
-     * @param departmentStr Department name
-     * @return true if valid, false if not
-     */
-    private static boolean isInputDepartmentValid(String departmentStr) {
-        int validNumber = 0;
-        for (Department d : departments
-        ) {
-            if (d.getName().equalsIgnoreCase(departmentStr)) {
-                validNumber++;
-            }
-        }
-        if (validNumber > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if input String is an valid date or not.
-     * Valid date format: uuuu-MM-d
-     *
-     * @param inputString the string user input
-     * @return true if the string follows valid date format, otherwise returns false
-     */
-    private static boolean isDateInputValid(String inputString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-d");
-        try {
-            LocalDate.parse(inputString, formatter);
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Checks if an input string is double type parsable or not.
-     *
-     * @param inputString the string user input
-     * @return true if the string is double type parsable, otherwise returns false
-     */
-    private static boolean isDouble(String inputString) {
-        try {
-            Double.parseDouble(inputString);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Checks if an input string is integer parsable or not.
-     *
-     * @param numberString input String
-     * @return true if input String is numeric, otherwise return false
-     */
-    private static boolean isNumeric(String numberString) {
-        try {
-            Integer.parseInt(numberString);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Check if an input for position choice valid or not
-     *
-     * @param positionChoice user input for position option selection
-     * @return true if input value is "1", "2" or "3", otherwise returns false
-     */
-    private static boolean isPositionInputValid(String positionChoice) {
-        if (positionChoice.equals("1") || positionChoice.equals("2") || positionChoice.equals("3")) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Prints message when user inputs an invalid value.
-     */
-    private static void printInvalidMessage() {
-        System.out.println("Invalid input. Please try again.");
-    }
 
     /**
      * Lets user inputs information and add new employee into ArrayList.
@@ -530,10 +469,10 @@ public class HumanResources {
         double overtimeHour;
 
         System.out.println("Add new Employee");
-        System.out.println("----------------");
+        UI.printSeparatedLine(16);
 
         /* ID */
-        System.out.print("Emoloyee ID: ");
+        System.out.print("Employee ID: ");
         id = scanner.next();
         scanner.nextLine(); //workaround skipping next line bug of Scanner next();
         /* NAME */
@@ -542,52 +481,63 @@ public class HumanResources {
 
         /* AGE */
         while (true) {
-            System.out.print("Manager age: ");
+            System.out.print("Age: ");
             ageStr = scanner.next();
-            if (isNumeric(ageStr)) {
+            if (CheckValidity.isNumeric(ageStr)) {
                 age = Integer.parseInt(ageStr);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
 
         /* PAY RATE */
         while (true) {
-            System.out.print("Manager pay rate: ");
+            System.out.print("Pay rate: ");
             payRateStr = scanner.next();
             scanner.nextLine(); //workaround skipping next line bug of Scanner next();
-            if (isDouble(payRateStr)) {
+            if (CheckValidity.isDouble(payRateStr)) {
                 payRate = Double.parseDouble(payRateStr);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
         /* START DATE */
         while (true) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-d");
             System.out.print("Start date (YYYY-MM-DD): ");
             startDateStr = scanner.next();
+            scanner.nextLine();
 
-            if (isDateInputValid(startDateStr)) {
+            if (CheckValidity.isDateInputValid(startDateStr)) {
                 startDate = LocalDate.parse(startDateStr, formatter);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
         /* DEPARTMENTS */
         System.out.println("Please enter department name following below list: ");
         displayDepartmentList();
+        int position;
+        int staffNum;
 
         while (true) {
+
             System.out.print("Enter department name: ");
             departmentStr = scanner.nextLine();
-            if (isInputDepartmentValid(departmentStr)) {
+            if (CheckValidity.isInputDepartmentValid(departmentStr)) {
                 for (Department dept :
                         departments) {
                     if (dept.getName().equalsIgnoreCase(departmentStr)) {
                         department = dept;
-                        int employeesNum = dept.getEmployeesNum();
-                        dept.setEmployeesNum(employeesNum++); //add employee number field
+
+                        staffNum = department.getEmployeesNum();
+                        staffNum++;
+                        department.setEmployeesNum(staffNum);
+
+                        position = departments.indexOf(department);
+                        //TODO: add employee number field
+                        departments.set(position, department);
+
                     }
                 }
                 break;
@@ -598,21 +548,21 @@ public class HumanResources {
         while (true) {
             System.out.print("Enter number of day-off: ");
             numDayOffStr = scanner.next();
-            if (isNumeric(numDayOffStr)) {
+            if (CheckValidity.isNumeric(numDayOffStr)) {
                 numDayOff = Integer.parseInt(numDayOffStr);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
         /* OVERTIME HOUR */
         while (true) {
             System.out.print("Enter number of overtime hour: ");
             overtimeHourStr = scanner.next();
-            if (isDouble(overtimeHourStr)) {
+            if (CheckValidity.isDouble(overtimeHourStr)) {
                 overtimeHour = Double.parseDouble(overtimeHourStr);
                 break;
             }
-            printInvalidMessage();
+            UI.printInvalidMessage();
         }
 
         /*ADD NEW MANAGER TO ARRAY LIST */
@@ -622,19 +572,7 @@ public class HumanResources {
         System.out.println("New employee has been added successfully.");
     }
 
-    /**
-     * Checks if input for choosing adding between new Employee and new Manager valid or not
-     *
-     * @param userChoice user's input
-     * @return true if valid, false if not
-     */
-    private static boolean addNewStaffValid(String userChoice) {
-        if (userChoice.equalsIgnoreCase("E")
-                || userChoice.equalsIgnoreCase("M")) {
-            return true;
-        }
-        return false;
-    }
+
 
     /**
      * Search staff by ID name.
@@ -645,11 +583,10 @@ public class HumanResources {
         ArrayList<Staff> searchStaff = new ArrayList<>();
 
         while (true) {
-            System.out.println("Look for staff information by staff ID or staff name:");
+            System.out.println("Search staff information by staff ID or staff name:");
             System.out.print("Please enter staff ID or staff name: ");
             searchKey = scanner.nextLine();
-            for (Staff s :
-                    staffList) {
+            for (Staff s : staffList) {
                 if (s.getId().toLowerCase().contains(searchKey.toLowerCase()) || s.getName().toLowerCase().contains(searchKey.toLowerCase())) {
                     searchStaff.add(s);
                 }
@@ -658,10 +595,8 @@ public class HumanResources {
                 System.out.println("There is no Staff matched your search information.");
 
             } else { //print staff info
-                printTitle();
-                System.out.println();
-                for (Staff s :
-                        searchStaff) {
+                UI.printTitle();
+                for (Staff s : searchStaff) {
                     System.out.println(s.toString());
                 }
             }
@@ -677,7 +612,9 @@ public class HumanResources {
                 return (int) (o2.calculateSalary() - o1.calculateSalary());
             }
         });
-        printTitle();
+
+        System.out.println("Display salary of all staff in sorted descending order");
+        UI.printTitle();
         System.out.println();
         for (Staff s :
                 sortedList) {
@@ -694,7 +631,9 @@ public class HumanResources {
                 return (int) (o1.calculateSalary() - o2.calculateSalary());
             }
         });
-        printTitle();
+
+        System.out.println("Display salary of all staff sorted ascending order");
+        UI.printTitle();
         System.out.println();
         for (Staff s :
                 sortedList) {
